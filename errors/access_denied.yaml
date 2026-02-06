@@ -1,0 +1,42 @@
+kb_metadata:
+  version: 1.0.0
+  status: ACTIVE
+  last_reviewed: 2026-02-05
+error_type: AccessDeniedException
+error_scope: AWS::Glue::Job
+category: IAM
+severity: HIGH
+
+description: >
+  Glue job execution failed because the associated IAM role
+  does not have sufficient permissions to access required
+  AWS resources.
+
+possible_causes:
+  - Missing read permissions on S3 data sources
+  - Missing decrypt permissions on KMS-encrypted objects
+
+safe_fixes:
+  - fix_id: ADD_S3_READ
+    description: Grant read-only access to required S3 prefix
+    requires_live_checks:
+      - s3_permission_missing
+    allowed_iam_actions:
+      - s3:GetObject
+    resource_constraints:
+      allow_wildcards: false
+    risk_level: LOW
+
+  - fix_id: ADD_KMS_DECRYPT
+    description: Grant decrypt permission on required KMS key
+    requires_live_checks:
+      - kms_permission_missing
+    allowed_iam_actions:
+      - kms:Decrypt
+    resource_constraints:
+      allow_wildcards: false
+    risk_level: MEDIUM
+
+constraints:
+  must_not_attach_admin_policy: true
+  must_not_modify_trust_policy: true

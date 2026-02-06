@@ -1,0 +1,49 @@
+kb_metadata:
+  version: 1.0.0
+  status: ACTIVE
+  last_reviewed: 2024-06-05
+error_type: GlueEncryptionException
+error_scope: AWS::Glue::Job
+category: ENCRYPTION
+severity: HIGH
+
+description: >
+  Encryption settings between Glue, S3, and KMS are incompatible or misconfigured.
+
+possible_causes:
+  - Glue job writes encrypted data with a key it cannot use
+  - Destination bucket enforces KMS but job lacks key permissions
+  - Mismatch between job and bucket encryption requirements
+
+safe_fixes:
+  - fix_id: ALIGN_ENCRYPTION_SETTINGS
+    title: Align encryption settings
+    description: Update job encryption settings to match destination bucket/KMS
+    requires_live_checks: [encryption_mismatch, kms_key_in_use]
+    allowed_service_actions: [glue:UpdateJob]
+    resource_constraints:
+      resource_type: encryption_config
+    risk_level: HIGH
+
+  - fix_id: ADD_KMS_DECRYPT
+    title: Add KMS decrypt permission
+    description: Allow decrypt for reading encrypted inputs
+    requires_live_checks: [kms_permission_missing]
+    allowed_iam_actions: [kms:Decrypt]
+    resource_constraints:
+      resource_type: kms_key
+      allow_wildcards: false
+    risk_level: MEDIUM
+
+constraints:
+  must_not_attach_admin_policy: true
+  must_not_grant_wildcard_resource: true
+  max_policy_statements_added: 1
+
+automation_policy:
+  auto_remediation_allowed: false
+  human_approval_required_for: [risk_level: HIGH]
+
+audit_metadata:
+  owner_team: data-platform
+  compliance_tags: [encryption, iam, glue]

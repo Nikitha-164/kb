@@ -1,0 +1,71 @@
+kb_metadata:
+  version: 1.0.0
+  status: ACTIVE
+  last_reviewed: 2024-06-05
+error_type: EntityNotFoundException
+error_scope: AWS::Glue::Job
+category: GLUE
+severity: MEDIUM
+
+description: >
+  A referenced Glue resource (database, table, or connection) does not exist.
+
+possible_causes:
+  - Glue database missing
+  - Glue table metadata missing
+  - Glue connection not created or deleted
+
+safe_fixes:
+  - fix_id: CREATE_GLUE_DATABASE
+    title: Create Glue database
+    description: Create the missing Glue database if it is expected
+    requires_live_checks:
+      - glue_database_missing
+      - glue_database_is_expected
+    allowed_service_actions:
+      - glue:CreateDatabase
+    resource_constraints:
+      resource_type: glue_database
+    risk_level: LOW
+
+  - fix_id: CREATE_GLUE_TABLE
+    title: Create Glue table metadata
+    description: Create table metadata only for expected tables
+    requires_live_checks:
+      - glue_table_missing
+      - glue_database_exists
+      - glue_table_is_expected
+    allowed_service_actions:
+      - glue:CreateTable
+    resource_constraints:
+      resource_type: glue_table
+    risk_level: MEDIUM
+
+  - fix_id: ATTACH_GLUE_CONNECTION
+    title: Attach existing Glue connection
+    description: Attach a pre-approved Glue connection to the job configuration
+    requires_live_checks:
+      - glue_connection_exists
+      - glue_connection_is_expected
+      - job_missing_connection
+    allowed_service_actions:
+      - glue:UpdateJob
+    resource_constraints:
+      resource_type: glue_connection
+    risk_level: MEDIUM
+
+constraints:
+  must_not_grant_wildcard_resource: true
+  max_policy_statements_added: 0
+  must_not_create_unknown_resources: true
+  must_not_infer_schema: true
+  must_not_override_existing_schema: true
+
+automation_policy:
+  auto_remediation_allowed: true
+  human_approval_required_for:
+    - risk_level: HIGH
+
+audit_metadata:
+  owner_team: data-platform
+  compliance_tags: [glue]

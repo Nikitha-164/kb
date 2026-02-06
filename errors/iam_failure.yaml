@@ -1,0 +1,126 @@
+kb_metadata:
+  version: 1.0.0
+  status: ACTIVE
+  last_reviewed: 2024-06-05
+error_type: IAMFailure
+error_scope: AWS::Glue::Job
+category: IAM
+severity: HIGH
+
+description: >
+  The Glue job failed due to IAM permission issues on the execution role,
+  such as missing permissions to access S3, CloudWatch Logs, Glue APIs,
+  or missing iam:PassRole capability.
+
+possible_causes:
+  - Missing S3 read/write permissions on input or output paths
+  - Missing CloudWatch Logs permissions
+  - Missing iam:PassRole permission for Glue execution
+  - Missing minimal Glue service permissions
+  - IAM policy drift or incomplete role setup
+
+safe_fixes:
+
+  #
+  # ✅ Fix 1: Add S3 READ permissions (input)
+  #
+  - fix_id: ADD_S3_READ
+    title: Add S3 read permission
+    description: Grant read-only access to required S3 input prefix
+    requires_live_checks:
+      - s3_read_permission_missing
+    allowed_iam_actions:
+      - s3:GetObject
+    resource_constraints:
+      resource_type: s3_prefix
+      allow_wildcards: false
+    risk_level: LOW
+
+  #
+  # ✅ Fix 2: Add S3 WRITE permissions (output)
+  #
+  - fix_id: ADD_S3_WRITE
+    title: Add S3 write permission
+    description: Grant write access to required S3 output prefix
+    requires_live_checks:
+      - s3_write_permission_missing
+    allowed_iam_actions:
+      - s3:PutObject
+    resource_constraints:
+      resource_type: s3_prefix
+      allow_wildcards: false
+    risk_level: LOW
+
+  #
+  # ✅ Fix 3: Add CloudWatch Logs permissions
+  #
+  - fix_id: ADD_CLOUDWATCH_LOGS_WRITE
+    title: Enable CloudWatch Logs write
+    description: Allow Glue job to create log groups, streams, and write logs
+    requires_live_checks:
+      - cloudwatch_logs_permission_missing
+    allowed_iam_actions:
+      - logs:CreateLogGroup
+      - logs:CreateLogStream
+      - logs:PutLogEvents
+    resource_constraints:
+      resource_type: cloudwatch_logs
+      allow_wildcards: false
+    risk_level: LOW
+
+  #
+  # ✅ Fix 4: Add iam:PassRole permission
+  #
+  - fix_id: ADD_IAM_PASSROLE
+    title: Allow iam:PassRole
+    description: Allow Glue to pass the execution role during job startup
+    requires_live_checks:
+      - iam_passrole_missing
+    allowed_iam_actions:
+      - iam:PassRole
+    resource_constraints:
+      resource_type: iam_role
+      allow_wildcards: false
+    risk_level: MEDIUM
+
+  #
+  # ✅ Fix 5: Add minimal Glue service permissions
+  #
+  - fix_id: ADD_GLUE_SERVICE_PERMISSIONS
+    title: Add minimal Glue service permissions
+    description: Grant minimal Glue read permissions required at runtime
+    requires_live_checks:
+      - glue_permission_missing
+    allowed_iam_actions:
+      - glue:GetJob
+      - glue:GetJobRun
+      - glue:GetDatabase
+      - glue:GetTable
+    resource_constraints:
+      resource_type: glue_resource
+      allow_wildcards: false
+    risk_level: LOW
+
+constraints:
+  #
+  # 🚫 Hard safety guardrails (DO NOT REMOVE)
+  #
+  must_not_attach_admin_policy: true
+  must_not_modify_trust_policy: true
+  must_not_grant_wildcard_resource: true
+  must_not_override_permission_boundary: true
+  must_not_attach_managed_policies: true
+  max_policy_statements_added: 1
+
+automation_policy:
+  auto_remediation_allowed: true
+  human_approval_required_for:
+    - risk_level: HIGH
+
+audit_metadata:
+  owner_team: platform-security
+  compliance_tags:
+    - iam
+    - least-privilege
+    - glue
+    - security

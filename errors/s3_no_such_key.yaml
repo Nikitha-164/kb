@@ -1,0 +1,38 @@
+kb_metadata:
+  version: 1.0.0
+  status: ACTIVE
+  last_reviewed: 2024-06-05
+error_type: S3NoSuchKey
+error_scope: AWS::Glue::Job
+category: S3
+severity: MEDIUM
+
+description: >
+  The specified S3 key or prefix does not exist at runtime.
+
+possible_causes:
+  - Input data not yet landed
+  - Wrong partition/prefix
+  - Typo in configured S3 path
+
+safe_fixes:
+  - fix_id: UPDATE_S3_INPUT_PATH
+    title: Update S3 input path
+    description: Change job input path to an existing S3 prefix chosen by policy
+    requires_live_checks: [s3_prefix_missing, s3_alternative_prefix_exists]
+    allowed_service_actions: [glue:UpdateJob]
+    resource_constraints:
+      resource_type: job_argument_only
+    risk_level: MEDIUM
+
+constraints:
+  must_not_grant_wildcard_resource: true
+  max_policy_statements_added: 0
+
+automation_policy:
+  auto_remediation_allowed: true
+  human_approval_required_for: [risk_level: HIGH]
+
+audit_metadata:
+  owner_team: data-platform
+  compliance_tags: [s3, glue]

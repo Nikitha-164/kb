@@ -1,0 +1,49 @@
+kb_metadata:
+  version: 1.0.0
+  status: ACTIVE
+  last_reviewed: 2024-06-05
+error_type: ResourceLimitExceeded
+error_scope: AWS::Glue::Job
+category: LIMITS
+severity: HIGH
+
+description: >
+  The job exceeded configured resources (DPU, memory, or timeout).
+
+possible_causes:
+  - Under-provisioned DPU for workload
+  - Job times out due to data volume or throttling
+  - Memory pressure causes executor failures
+
+safe_fixes:
+  - fix_id: INCREASE_DPU
+    title: Increase Glue job DPUs
+    description: Raise DPU count within the approved ceiling
+    requires_live_checks: [dpu_limit_reached]
+    allowed_service_actions: [glue:UpdateJob]
+    resource_constraints:
+      resource_type: job_compute
+      max_dpu: 10
+    risk_level: HIGH
+
+  - fix_id: INCREASE_TIMEOUT
+    title: Increase job timeout
+    description: Extend job timeout up to an approved limit
+    requires_live_checks: [timeout_frequently_exceeded]
+    allowed_service_actions: [glue:UpdateJob]
+    resource_constraints:
+      resource_type: job_runtime
+      max_timeout_minutes: 360
+    risk_level: MEDIUM
+
+constraints:
+  must_not_grant_wildcard_resource: true
+  max_policy_statements_added: 0
+
+automation_policy:
+  auto_remediation_allowed: true
+  human_approval_required_for: [risk_level: HIGH]
+
+audit_metadata:
+  owner_team: data-platform
+  compliance_tags: [limits, glue]
