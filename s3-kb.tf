@@ -60,3 +60,29 @@ resource "aws_s3_object" "kb_errors" {
     aws_s3_bucket_policy.kb_tls
   ]
 }
+# Upload the alias map
+resource "aws_s3_object" "kb_index_json" {
+  bucket       = aws_s3_bucket.kb.id
+  key          = "errors/index.json"
+  content      = file("${path.module}/errors/index.json")
+  content_type = "application/json"
+  depends_on   = [aws_s3_bucket.kb]
+}
+
+# Upload the resolver JS
+resource "aws_s3_object" "kb_resolver_js" {
+  bucket       = aws_s3_bucket.kb.id
+  key          = "resolve.js"
+  content      = file("${path.module}/resolve.js")
+  content_type = "application/javascript"
+  depends_on   = [aws_s3_bucket.kb]
+}
+
+# Upload the tiny HTML launcher
+resource "aws_s3_object" "kb_resolve_html" {
+  bucket       = aws_s3_bucket.kb.id
+  key          = "resolve.html"
+  content      = file("${path.module}/resolve.html")
+  content_type = "text/html"
+  depends_on   = [aws_s3_bucket.kb]
+}

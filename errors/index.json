@@ -1,0 +1,137 @@
+{
+  "S3NoSuchKey": {
+    "slug": "s3-no-such-key",
+    "aliases": [
+      "nosuchkey",
+      "the specified key does not exist",
+      "no such key",
+      "headobject operation: not found",
+      "404 not found (headobject)",
+      "s3 prefix not found",
+      "path does not exist: s3://",
+      "file not found in s3",
+      "glue input path does not exist",
+      "partition not found at s3",
+      "key does not exist",
+      "not found: s3://"
+    ]
+  },
+  "ResourceLimitExceeded": {
+    "slug": "glue-resource-limit-exceeded",
+    "aliases": [
+      "resourcelimitexceededexception",
+      "dpu limit exceeded",
+      "job exceeded maximum capacity",
+      "job exceeded allocated capacity",
+      "exceeded configured resources",
+      "out of memory",
+      "container killed by yarn",
+      "executor lost",
+      "spark stage failed due to memory",
+      "execution timed out",
+      "job timed out",
+      "memory exceeded",
+      "container killed due to oom"
+    ]
+  },
+  "NetworkConnectionFailure": {
+    "slug": "glue-network-connection-failure",
+    "aliases": [
+      "connection timed out",
+      "connect timed out",
+      "endpoint unreachable",
+      "no route to host",
+      "connection refused",
+      "connection reset by peer",
+      "connection reset",
+      "failed to establish jdbc connection",
+      "could not connect to jdbc endpoint",
+      "unable to reach database",
+      "test connection failed",
+      "glue job failed to connect",
+      "could not connect to host",
+      "timeout connecting to",
+      "connection closed",
+      "could not resolve host"
+    ]
+  },
+  "InvalidInputException": {
+    "slug": "glue-invalid-input",
+    "aliases": [
+      "invalidinputexception",
+      "invalid input",
+      "invalid job argument",
+      "invalid argument value",
+      "invalid parameter value",
+      "unable to parse job arguments",
+      "malformed s3 path",
+      "invalid s3 uri",
+      "path must start with s3://",
+      "invalid s3 path",
+      "argument --input_path not recognized"
+    ]
+  },
+  "IAMFailure": {
+    "slug": "glue-iam-failure",
+    "aliases": [
+      "is not authorized to perform iam:passrole",
+      "unable to pass role",
+      "cannot assume role",
+      "the service is not authorized to assume role",
+      "logs:createloggroup access denied",
+      "logs:putlogevents access denied",
+      "glue:getjob access denied",
+      "glue:getjobrun access denied",
+      "glue:getdatabase access denied",
+      "glue:gettable access denied",
+      "the security token included in the request is invalid"
+    ]
+  },
+  "GlueEncryptionException": {
+    "slug": "glue-encryption-exception",
+    "aliases": [
+      "glueencryptionexception",
+      "kmsaccessdeniedexception",
+      "not authorized to use kms key",
+      "cannot decrypt data key",
+      "failed to encrypt data",
+      "s3 access denied due to encryption",
+      "bucket enforces kms encryption",
+      "encryption configuration mismatch",
+      "access denied (kms)",
+      "access denied for key",
+      "invalid kms key policy"
+    ]
+  },
+  "EntityNotFoundException": {
+    "slug": "glue-entity-not-found",
+    "aliases": [
+      "entitynotfoundexception",
+      "entity not found",
+      "database not found",
+      "table not found",
+      "glue database does not exist",
+      "glue table does not exist",
+      "connection not found",
+      "unable to verify existence of database",
+      "error while calling getcatalogsource",
+      "getcatalogsource entity not found",
+      "table does not exist",
+      "database does not exist"
+    ]
+  },
+  "AccessDeniedException": {
+    "slug": "glue-access-denied",
+    "aliases": [
+      "accessdeniedexception",
+      "s3 access denied",
+      "headobject operation: forbidden",
+      "not authorized to use kms key",
+      "user is not authorized",
+      "not authorized to perform",
+      "is not authorized to perform",
+      "access denied",
+      "kmsaccessdeniedexception"
+    ]
+  }
+}
