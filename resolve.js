@@ -26,7 +26,7 @@ async function resolveAndRedirect() {
   const params = new URLSearchParams(window.location.search);
   const errorText = params.get('error') || '';
   const slug = await findErrorSlug(errorText);
-  window.location.replace(`/errors/${slug}.html`);
+  window.location.replace(`/errors/${slug}.yaml`);
 }
 
 // Trigger on page load
